@@ -25,18 +25,49 @@
     --text-muted:#8b8e92;
     --text-dim:#5c5f63;
     --volt:#c6ff3d;
-    --volt-dim: rgba(198,255,61,0.14);
+    --volt-rgb: 198,255,61;
+    --volt-dim: rgba(var(--volt-rgb),0.14);
     --ember:#ff5a36;
-    --ember-dim: rgba(255,90,54,0.14);
+    --ember-rgb: 255,90,54;
+    --ember-dim: rgba(var(--ember-rgb),0.14);
     --steel:#4da8da;
-    --steel-dim: rgba(77,168,218,0.14);
+    --steel-rgb: 77,168,218;
+    --steel-dim: rgba(var(--steel-rgb),0.14);
     --kb:#e8b64c;
-    --kb-dim: rgba(232,182,76,0.14);
+    --kb-rgb: 232,182,76;
+    --kb-dim: rgba(var(--kb-rgb),0.14);
     --violet:#a389f4;
-    --violet-dim: rgba(163,137,244,0.14);
+    --violet-rgb: 163,137,244;
+    --violet-dim: rgba(var(--violet-rgb),0.14);
     --radius: 16px;
     --radius-sm: 10px;
     --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  html[data-theme="light"]{
+    --bg:#f4f5f2;
+    --bg-2:#ffffff;
+    --surface:#ffffff;
+    --surface-2:#eceee9;
+    --line: rgba(0,0,0,0.09);
+    --line-strong: rgba(0,0,0,0.16);
+    --text:#14161a;
+    --text-muted:#5c5f63;
+    --text-dim:#9a9da1;
+    --volt:#6a9c1f;
+    --volt-rgb: 106,156,31;
+    --volt-dim: rgba(106,156,31,0.13);
+    --ember:#e0512e;
+    --ember-rgb: 224,81,46;
+    --ember-dim: rgba(224,81,46,0.13);
+    --steel:#2f8fc9;
+    --steel-rgb: 47,143,201;
+    --steel-dim: rgba(47,143,201,0.13);
+    --kb:#a8760a;
+    --kb-rgb: 168,118,10;
+    --kb-dim: rgba(168,118,10,0.13);
+    --violet:#7859d6;
+    --violet-rgb: 120,89,214;
+    --violet-dim: rgba(120,89,214,0.13);
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
   html,body{margin:0; padding:0; height:100%; background:var(--bg);}
@@ -50,7 +81,7 @@
     margin:0 auto;
     min-height:100vh;
     background:
-      radial-gradient(1200px 500px at 50% -10%, rgba(198,255,61,0.06), transparent 60%),
+      radial-gradient(1200px 500px at 50% -10%, rgba(var(--volt-rgb),0.06), transparent 60%),
       var(--bg);
     position:relative;
     display:flex;
@@ -101,9 +132,9 @@
     display:flex; align-items:center; justify-content:center;
   }
   .prog-card .plate .num{ font-family:'Anton'; font-size:26px; color:rgba(255,255,255,0.08); }
-  .prog-card.fullbody .plate{ border-color: rgba(198,255,61,0.10); }
-  .prog-card.ppl .plate{ border-color: rgba(255,90,54,0.10); }
-  .prog-card.split .plate{ border-color: rgba(77,168,218,0.10); }
+  .prog-card.fullbody .plate{ border-color: rgba(var(--volt-rgb),0.10); }
+  .prog-card.ppl .plate{ border-color: rgba(var(--ember-rgb),0.10); }
+  .prog-card.split .plate{ border-color: rgba(var(--steel-rgb),0.10); }
   .prog-card .arrow{ position:absolute; right:18px; bottom:16px; color:var(--text-dim); font-size:18px; }
 
   .history-entry-btn{
@@ -130,11 +161,11 @@
   .day-card .info span{ color:var(--text-muted); font-size:12.5px; }
   .day-card .chev{ margin-left:auto; color:var(--text-dim); }
   .repeat-row{
-    display:flex; align-items:center; gap:7px; background:var(--volt-dim); border:1px solid rgba(198,255,61,0.25); border-top:none;
+    display:flex; align-items:center; gap:7px; background:var(--volt-dim); border:1px solid rgba(var(--volt-rgb),0.25); border-top:none;
     padding:9px 18px; font-size:11.5px; font-weight:700; color:var(--volt); cursor:pointer;
   }
   .repeat-row svg{ width:13px; height:13px; flex-shrink:0; }
-  .repeat-row:active{ background:rgba(198,255,61,0.22); }
+  .repeat-row:active{ background:rgba(var(--volt-rgb),0.22); }
   .repeat-row .repeat-count{ color:var(--text-dim); font-weight:600; margin-left:auto; }
 
   /* ---------- Buttons ---------- */
@@ -233,7 +264,7 @@
   .manage-btn{ margin-left:auto; }
   .remove-x{
     width:30px; height:30px; border-radius:50%; background:var(--ember-dim); color:var(--ember);
-    border:1px solid rgba(255,90,54,0.25); display:flex; align-items:center; justify-content:center;
+    border:1px solid rgba(var(--ember-rgb),0.25); display:flex; align-items:center; justify-content:center;
     cursor:pointer; flex-shrink:0;
   }
   .remove-x:active{ background:var(--ember); color:#1a0a05; }
@@ -371,7 +402,7 @@
   .cat-card span{ color:var(--text-muted); font-size:12.5px; }
   .cat-chev{ margin-left:auto; color:var(--text-dim); }
 
-  .prog-card.kettlebell_fullbody .plate{ border-color: rgba(232,182,76,0.10); }
+  .prog-card.kettlebell_fullbody .plate{ border-color: rgba(var(--kb-rgb),0.10); }
 
   .last-session-card{
     background:var(--surface); border:1px dashed var(--line-strong); border-radius:var(--radius);
@@ -382,10 +413,10 @@
   .last-session-card .meta{ color:var(--text-muted); font-size:12.5px; }
 
   .next-card{
-    background:var(--volt-dim); border:1px solid rgba(198,255,61,0.3); border-radius:var(--radius);
+    background:var(--volt-dim); border:1px solid rgba(var(--volt-rgb),0.3); border-radius:var(--radius);
     padding:16px 18px; margin:18px 0 4px; cursor:pointer;
   }
-  .next-card:active{ background:rgba(198,255,61,0.2); }
+  .next-card:active{ background:rgba(var(--volt-rgb),0.2); }
   .next-card .tag{
     display:flex; align-items:center; gap:6px; font-size:10.5px; letter-spacing:1px; text-transform:uppercase;
     color:var(--volt); font-weight:800;
@@ -465,9 +496,9 @@
     display:flex; flex-direction:column; align-items:center; padding:30px 20px; border-radius:var(--radius);
     margin-bottom:18px; background:var(--surface); border:1px solid var(--line); transition: background .3s, border-color .3s;
   }
-  .runner-wrap.kind-effort{ background:var(--ember-dim); border-color:rgba(255,90,54,0.3); }
-  .runner-wrap.kind-recovery{ background:var(--steel-dim); border-color:rgba(77,168,218,0.3); }
-  .runner-wrap.kind-simple{ background:var(--volt-dim); border-color:rgba(198,255,61,0.3); }
+  .runner-wrap.kind-effort{ background:var(--ember-dim); border-color:rgba(var(--ember-rgb),0.3); }
+  .runner-wrap.kind-recovery{ background:var(--steel-dim); border-color:rgba(var(--steel-rgb),0.3); }
+  .runner-wrap.kind-simple{ background:var(--volt-dim); border-color:rgba(var(--volt-rgb),0.3); }
   .runner-phase-label{ font-size:13px; letter-spacing:3px; text-transform:uppercase; font-weight:800; margin-bottom:14px; }
   .runner-phase-label.kind-effort{ color:var(--ember); }
   .runner-phase-label.kind-recovery{ color:var(--steel); }
@@ -499,6 +530,9 @@
   .period-nav .period-label{ font-family:'JetBrains Mono'; font-size:13px; font-weight:700; color:var(--text); text-transform:capitalize; min-width:150px; text-align:center; }
 
   /* ---------- Export / Import ---------- */
+  .theme-block{ margin-bottom:16px; }
+  .theme-label{ display:block; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:var(--text-muted); margin-bottom:9px; }
+
   .export-block{
     background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
     padding:18px; margin-bottom:16px;
@@ -506,7 +540,7 @@
   .export-block h4{ margin:0 0 8px; font-size:14.5px; }
 
   .storage-warning{
-    background:var(--ember-dim); border:1px solid rgba(255,90,54,0.3); border-radius:var(--radius);
+    background:var(--ember-dim); border:1px solid rgba(var(--ember-rgb),0.3); border-radius:var(--radius);
     padding:16px 18px; margin-bottom:16px;
   }
   .storage-warning strong{ color:var(--ember); font-size:13.5px; }
@@ -777,6 +811,7 @@ const state = {
   prefs:{ variants:{}, seriesCount:{} },
   timer:{ total:0, remaining:0, running:false, intervalId:null, exerciseId:null },
   storageReady:false,
+  theme:"dark",
   modalMessage:null,
   pendingConfirm:null,
   showManager:false,
@@ -860,12 +895,14 @@ async function safeSet(key,val){
   }
 }
 async function loadAll(){
-  const [hist, prefs, intervals, stretchCircuits] = await Promise.all([
-    safeGet("history"), safeGet("prefs"), safeGet("interval_programs"), safeGet("stretch_circuits")
+  const [hist, prefs, intervals, stretchCircuits, theme] = await Promise.all([
+    safeGet("history"), safeGet("prefs"), safeGet("interval_programs"), safeGet("stretch_circuits"), safeGet("theme")
   ]);
   state.historyList = migrateHistory(hist || []);
   state.prefs = prefs || { variants:{}, seriesCount:{} };
   state.stretchCircuits = stretchCircuits || JSON.parse(JSON.stringify(STRETCH_CIRCUITS_DEFAULT));
+  state.theme = (theme==="light" || theme==="dark") ? theme : "dark";
+  applyTheme();
   if(intervals){
     state.intervalPrograms = intervals;
   } else {
@@ -882,6 +919,17 @@ async function loadAll(){
     await persistIntervalPrograms();
   }
   state.storageReady = true;
+}
+function applyTheme(){
+  document.documentElement.setAttribute("data-theme", state.theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.setAttribute("content", state.theme==="light" ? "#f4f5f2" : "#151617");
+}
+function setTheme(mode){
+  state.theme = mode;
+  applyTheme();
+  safeSet("theme", mode);
+  render();
 }
 async function persistHistory(){ await safeSet("history", state.historyList); }
 async function persistPrefs(){ await safeSet("prefs", state.prefs); }
@@ -1004,58 +1052,6 @@ function execConfirm(){
   render();
   if(fn) fn();
 }
-/* ============================= ALERTES (son / vibration / notification) ============================= */
-/* Le son des chronos (gentleBell, beep, warnTick) ne joue plus qu'au moment précis où
-   il doit sonner — jamais en continu. En complément :
-   - Vibration du téléphone si le navigateur le permet (Android notamment).
-   - Notification système si l'app est en arrière-plan (PWA ajoutée à l'écran d'accueil,
-     iOS 16.4+).
-   Limites honnêtes : impossible de couper le son d'une autre appli (Spotify, Musique...)
-   depuis un site web. Et si le téléphone est verrouillé ou l'app vraiment en arrière-plan,
-   iOS peut retarder ou empêcher le son de jouer au moment exact — la notification prend
-   alors le relais dès que possible. */
-function vibrate(pattern){
-  try{ if("vibrate" in navigator) navigator.vibrate(pattern); }catch(e){}
-}
-function requestNotifPermission(){
-  try{
-    if("Notification" in window && Notification.permission === "default"){
-      Notification.requestPermission();
-    }
-  }catch(e){}
-}
-function notifyBackground(title, body){
-  try{
-    if(document.hidden && "Notification" in window && Notification.permission === "granted"){
-      new Notification(title, { body, silent:false });
-    }
-  }catch(e){}
-}
-
-/* Diagnostic affiché dans Profil : PWA installée ou simple onglet Safari, support
-   disponible, et statut actuel de la permission — pour voir précisément où ça bloque. */
-const IS_STANDALONE_PWA = window.matchMedia && window.matchMedia("(display-mode: standalone)").matches;
-function notifStatusText(){
-  if(!("Notification" in window)){
-    return "Les notifications ne sont pas disponibles dans ce navigateur.";
-  }
-  if(!IS_STANDALONE_PWA){
-    return "⚠️ Tu utilises l'app dans un onglet Safari classique. Sur iPhone, les notifications ne fonctionnent que si l'app est ajoutée à l'écran d'accueil (Partager → \"Sur l'écran d'accueil\"), puis ouverte depuis cette icône — pas depuis Safari.";
-  }
-  if(Notification.permission==="granted") return "✅ Notifications activées.";
-  if(Notification.permission==="denied") return "❌ Notifications bloquées. Va dans Réglages iPhone → Forge → Notifications pour les réactiver, puis reviens ici.";
-  return "Notifications pas encore activées.";
-}
-function notifStatusButton(){
-  if(!("Notification" in window) || !IS_STANDALONE_PWA || Notification.permission!=="default") return "";
-  return `<button class="btn btn-steel btn-block" onclick="manualRequestNotif()">Activer les notifications</button>`;
-}
-function manualRequestNotif(){
-  try{
-    Notification.requestPermission().then(()=>{ render(); });
-  }catch(e){ showToast("Impossible de demander la permission"); }
-}
-
 function beep(){
   try{
     const ctx = new (window.AudioContext||window.webkitAudioContext)();
@@ -1196,9 +1192,7 @@ function tickTimer(){
   if(t.remaining<=0){
     stopTimer(true);
     gentleBell();
-    vibrate([200,100,200]);
     showToast("Repos terminé — c'est reparti !");
-    notifyBackground("Repos terminé", "C'est reparti pour la série suivante 💪");
   }
 }
 function toggleTimerPause(){
@@ -1265,7 +1259,6 @@ function resumeSession(){
 
 function startDay(programKey, dayIndex){
   state.activeSession = buildSession(programKey, dayIndex);
-  requestNotifPermission();
   state.view = "session";
   render();
 }
@@ -1676,7 +1669,6 @@ function startFractionneRunner(program){
   state.view = "cardio-fractionne-runner";
   render();
   announcePhase(phases[0]);
-  requestNotifPermission();
   state.cardioRunner.intervalId = setInterval(tickRunner, 1000);
 }
 function tickRunner(){
@@ -1704,9 +1696,7 @@ function advanceRunnerPhase(){
   r.remaining = r.phases[r.phaseIndex].duration;
   r.phaseEndAt = Date.now() + r.phases[r.phaseIndex].duration*1000;
   beep();
-  vibrate([150,80,150]);
   announcePhase(r.phases[r.phaseIndex]);
-  notifyBackground(r.phases[r.phaseIndex].label, `${r.program.name} — étape ${r.phaseIndex+1}/${r.phases.length}`);
   render();
 }
 function skipRunnerPhase(){ advanceRunnerPhase(); }
@@ -1744,7 +1734,7 @@ async function finishRunner(completed){
   };
   state.historyList.unshift(record);
   await persistHistory();
-  if(completed){ beep(); vibrate([200,100,200,100,200]); notifyBackground("Séance terminée !", r.program.name); }
+  if(completed){ beep(); }
   state.cardioRunner = null;
   showToast(completed ? "Séance de fractionné terminée !" : "Séance enregistrée");
   openHistoryDetail(record);
@@ -1825,7 +1815,6 @@ function startStretchCircuit(key){
   state.view = "stretching-runner";
   render();
   speak(phases[0].label);
-  requestNotifPermission();
   state.stretchRunner.intervalId = setInterval(tickStretchRunner, 1000);
 }
 function tickStretchRunner(){
@@ -1844,9 +1833,7 @@ function advanceStretchPhase(){
   r.remaining = r.phases[r.phaseIndex].duration;
   r.phaseEndAt = Date.now() + r.phases[r.phaseIndex].duration*1000;
   beep();
-  vibrate([150,80,150]);
   speak(r.phases[r.phaseIndex].label);
-  notifyBackground(r.phases[r.phaseIndex].label, "Circuit d'étirements");
   render();
 }
 function skipStretchPhase(){ advanceStretchPhase(); }
@@ -1866,9 +1853,7 @@ function finishStretchCircuit(){
   if(state.stretchRunner && state.stretchRunner.intervalId) clearInterval(state.stretchRunner.intervalId);
   state.stretchRunner = null;
   gentleBell();
-  vibrate([200,100,200,100,200]);
   showToast("Circuit d'étirements terminé, bravo !");
-  notifyBackground("Circuit terminé, bravo !", "");
   state.stretchCircuitKey = key;
   state.view = "stretching-detail";
   render();
@@ -2613,7 +2598,7 @@ function buildProgressSVG(points){
   return `
     <svg viewBox="0 0 ${W} ${H}" style="width:100%; height:100%; display:block;" preserveAspectRatio="xMidYMid meet">
       ${gridLines}
-      <polygon points="${areaPts}" fill="rgba(198,255,61,0.12)" stroke="none"/>
+      <polygon points="${areaPts}" fill="rgba(var(--volt-rgb),0.12)" stroke="none"/>
       <polyline points="${linePts}" fill="none" stroke="#c6ff3d" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
       ${dots}
     </svg>`;
@@ -2862,6 +2847,13 @@ function renderProfile(){
       <p>Toutes tes données sont privées et stockées uniquement sur ton compte.</p>
     </div>
     ${storageBanner}
+    <div class="theme-block">
+      <span class="theme-label">Apparence</span>
+      <div class="config-row">
+        <div class="config-chip ${state.theme==='dark'?'active':''}" onclick="setTheme('dark')"><span class="val">🌙</span>Sombre</div>
+        <div class="config-chip ${state.theme==='light'?'active':''}" onclick="setTheme('light')"><span class="val">☀️</span>Clair</div>
+      </div>
+    </div>
     <div class="settings-block">
       <div class="settings-row"><span class="k">Séances effectuées</span><span class="v">${totalSessions}</span></div>
       <div class="settings-row"><span class="k">Séries totales</span><span class="v">${totalSets}</span></div>
@@ -2869,14 +2861,7 @@ function renderProfile(){
       <div class="settings-row"><span class="k">Temps total d'entraînement</span><span class="v">${totalMs>0?fmtDuration(totalMs):'0 min'}</span></div>
     </div>
     <div class="settings-block">
-      <div class="settings-row"><span class="k">Version</span><span class="v" style="color:var(--text-muted)">MVP 1.2</span></div>
-    </div>
-
-    <div class="export-block">
-      <h4>Notifications de fin de chrono</h4>
-      <p>${notifStatusText()}</p>
-      ${notifStatusButton()}
-      <p style="margin-top:10px; font-size:11.5px;">⚠️ Même activées, les notifications et le son ne peuvent se déclencher qu'au moment où tu reviens sur l'app si elle a été mise en arrière-plan longtemps — c'est une limitation d'iOS sur les apps web, pas de Forge.</p>
+      <div class="settings-row"><span class="k">Version</span><span class="v" style="color:var(--text-muted)">MVP 1.3</span></div>
     </div>
 
     <div class="export-block">
