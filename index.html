@@ -2,6 +2,9 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>FORGE — Coach de séance</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -567,6 +570,34 @@
   .stretch-move-btn:not(:disabled):active{ background:var(--surface); color:var(--text); }
   .stretch-cue{ color:var(--text-muted); font-size:13px; text-align:center; line-height:1.5; margin:4px 0 14px; max-width:34ch; }
 
+  /* v1.6 — suggestions, réordonner, favoris, muscles */
+  .set-row input.has-sug::placeholder{ color:var(--volt); opacity:0.5; font-style:italic; }
+  .sug-note{ font-size:12px; color:var(--text-muted); background:var(--surface-2); border-radius:10px; padding:8px 11px; margin:2px 0 10px; line-height:1.45; }
+  .sug-note b{ color:var(--volt); font-weight:700; }
+  .manager-row .mv{ display:flex; gap:6px; align-items:center; flex-shrink:0; }
+  .manager-row .mv .stretch-move-btn{ width:30px; height:30px; }
+  .picker-search{ outline:none; }
+  .picker-item .pi-actions{ display:flex; align-items:center; gap:10px; flex-shrink:0; }
+  .picker-item .pi-star{ font-size:19px; line-height:1; color:var(--text-dim); padding:2px 4px; }
+  .picker-item .pi-star.on{ color:var(--kb); }
+  .picker-item .pi-mini{ color:var(--text-muted); display:flex; padding:3px; }
+  .picker-new{ width:100%; padding:11px; border-radius:12px; border:1px dashed var(--line-strong); background:transparent; color:var(--text); font-weight:700; font-size:13.5px; cursor:pointer; }
+  .cf-field{ display:flex; flex-direction:column; gap:5px; margin-bottom:11px; }
+  .cf-field label{ font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--text-dim); font-weight:700; }
+  .cf-field input,.cf-field select{ padding:11px 13px; border-radius:11px; border:1px solid var(--line); background:var(--surface-2); color:var(--text); font-size:14px; box-sizing:border-box; width:100%; }
+  .cf-row{ display:flex; gap:10px; } .cf-row .cf-field{ flex:1; }
+  .body-wrap{ background:var(--surface); border:1px solid var(--line); border-radius:16px; padding:12px 8px 8px; margin-bottom:14px; }
+  .body-wrap svg{ width:100%; height:auto; display:block; }
+  .legend{ display:flex; flex-wrap:wrap; gap:10px 14px; justify-content:center; font-size:11px; color:var(--text-muted); padding:4px 6px 4px; }
+  .legend i{ display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:5px; vertical-align:-1px; }
+  .vol-row{ display:flex; align-items:center; gap:10px; margin-bottom:9px; }
+  .vol-row .nm{ width:96px; font-size:13px; flex-shrink:0; }
+  .vol-row .bar{ flex:1; height:12px; background:var(--surface-2); border-radius:6px; position:relative; overflow:hidden; }
+  .vol-row .zone{ position:absolute; top:0; bottom:0; background:rgba(var(--volt-rgb),0.13); }
+  .vol-row .fill{ position:absolute; left:0; top:0; bottom:0; border-radius:6px; }
+  .vol-row .v{ width:28px; text-align:right; font-family:'JetBrains Mono'; font-size:12.5px; font-weight:700; }
+  .prog-card.maison .plate{ border-color: rgba(var(--steel-rgb),0.10); }
+
   @media (min-width:481px){ #root{ box-shadow: 0 0 60px rgba(0,0,0,0.4); } }
 </style>
 </head>
@@ -639,6 +670,66 @@ const EXERCISE_DB = {
   rotary_torso:      { name:"Rotation du buste (machine)", muscle:"Obliques", sets:3, reps:"15-20", rest:60,
     variants:["Rotary torso machine","Cable woodchopper haut vers bas","Cable woodchopper bas vers haut"] },
 
+  /* ---- Exercices supplémentaires (catalogue étendu, hors programmes proposés) ---- */
+  incline_barbell_upper: { name:"Développé incliné barre (haut des pecs)", muscle:"Pectoraux", sets:3, reps:"8-12", rest:90,
+    variants:["Développé incliné barre (haut des pecs)","Développé incliné haltères prise neutre","Développé incliné Smith Machine","Chest press incliné machine","Pompes déclinées"] },
+  low_cable_fly:     { name:"Écarté poulie basse vers le haut (haut des pecs)", muscle:"Pectoraux", sets:3, reps:"12-15", rest:60,
+    variants:["Écarté poulie basse vers le haut (haut des pecs)","Écarté poulie haute vers le bas (bas des pecs)","Écarté haltères à plat","Pull-over haltère"] },
+  decline_press:     { name:"Développé décliné (bas des pecs)", muscle:"Pectoraux", sets:3, reps:"8-12", rest:90,
+    variants:["Développé décliné barre","Développé décliné haltères","Chest press décliné machine","Dips penché en avant"] },
+  chin_up_close:     { name:"Tirage horizontal machine (dos épais)", muscle:"Dos", sets:3, reps:"10-12", rest:90,
+    variants:["Rowing machine prise neutre","Rowing machine prise large","Rowing buste penché haltères","Tirage poitrine unilatéral poulie","Rowing Meadows"] },
+  straight_arm_pd:   { name:"Pull-over poulie bras tendus", muscle:"Dos", sets:3, reps:"12-15", rest:60,
+    variants:["Pull-over poulie bras tendus","Pull-over haltère","Pull-over machine"] },
+  shrugs:            { name:"Shrugs (trapèzes)", muscle:"Trapèzes", sets:3, reps:"12-15", rest:60,
+    variants:["Shrugs haltères","Shrugs barre","Shrugs Smith Machine","Shrugs poulie basse"] },
+  rear_delt_row:     { name:"Oiseau (arrière d'épaule)", muscle:"Épaules", sets:3, reps:"12-15", rest:60,
+    variants:["Oiseau haltères penché","Oiseau poulie croisée","Reverse pec deck","Élévations frontales haltères","Élévations frontales poulie","Développé Arnold"] },
+  upright_row:       { name:"Tirage menton", muscle:"Épaules / Trapèzes", sets:3, reps:"10-12", rest:60,
+    variants:["Tirage menton barre EZ","Tirage menton poulie","Tirage menton haltères"] },
+  lunges:            { name:"Fentes", muscle:"Quadriceps / Fessiers", sets:3, reps:"10-12 / jambe", rest:75,
+    variants:["Fentes marchées haltères","Fentes arrière","Fentes bulgares haltères","Fentes Smith Machine","Step-up banc"] },
+  rdl_db:            { name:"Soulevé de terre roumain haltères", muscle:"Ischios / Fessiers", sets:3, reps:"8-12", rest:90,
+    variants:["Soulevé de terre roumain haltères","Soulevé de terre roumain barre","Soulevé de terre jambes tendues","Good Morning barre","Nordic curl"] },
+  glute_kickback:    { name:"Kickback fessiers", muscle:"Fessiers", sets:3, reps:"12-15", rest:60,
+    variants:["Kickback poulie basse","Kickback machine","Pont fessier au sol","Hip thrust unilatéral"] },
+  seated_calf:       { name:"Mollets assis", muscle:"Mollets", sets:4, reps:"15-20", rest:45,
+    variants:["Mollets assis machine","Mollets debout Smith Machine","Mollets à la presse","Mollets unilatéral haltère"] },
+  concentration_curl:{ name:"Curl concentration", muscle:"Biceps", sets:3, reps:"10-12", rest:60,
+    variants:["Curl concentration haltère","Curl incliné haltères","Curl poulie haute (double biceps)","Curl araignée (spider curl)","Curl 21"] },
+  overhead_triceps:  { name:"Extension triceps au-dessus de la tête", muscle:"Triceps", sets:3, reps:"10-12", rest:60,
+    variants:["Extension triceps haltère à deux mains","Extension triceps poulie haute corde","Extension triceps unilatérale poulie","Barre au front (skull crusher)","Dips banc","Pompes diamant"] },
+  forearm_curl:      { name:"Curl poignets", muscle:"Avant-bras", sets:3, reps:"15-20", rest:45,
+    variants:["Curl poignets barre","Curl poignets inversé","Curl marteau corde","Farmer walk"] },
+  leg_raise:         { name:"Relevé de jambes", muscle:"Abdominaux", sets:3, reps:"12-15", rest:45,
+    variants:["Relevé de jambes suspendu","Relevé de jambes banc","Relevé de genoux à la chaise romaine","Crunch inversé","Mountain climbers","Dead bug","Russian twist"] },
+
+  /* ---- Dos : machines et variantes de tirage ---- */
+  high_row_machine:  { name:"High Row machine", muscle:"Dos", sets:3, reps:"10-12", rest:90,
+    variants:["High Row machine","High Row unilatéral","Tirage vertical machine convergente","Tirage vertical machine guidée prise neutre","Tirage vertical machine assistée (lat pulldown assis)"] },
+  low_row_machine:   { name:"Low Row machine", muscle:"Dos", sets:3, reps:"10-12", rest:90,
+    variants:["Low Row machine","Low Row unilatéral","Rowing assis machine buste appuyé (chest supported)","Rowing machine prise large","Rowing poulie basse unilatéral"] },
+  single_arm_pd:     { name:"Tirage vertical unilatéral poulie", muscle:"Dos", sets:3, reps:"10-12", rest:75,
+    variants:["Tirage vertical unilatéral poulie haute","Tirage vertical unilatéral prise neutre","Tirage poulie haute à genoux","Tirage poulie haute corde (vers le visage)"] },
+  chest_supported_db:{ name:"Rowing haltères buste appuyé", muscle:"Dos", sets:3, reps:"10-12", rest:75,
+    variants:["Rowing haltères sur banc incliné","Rowing barre buste appuyé","Rowing Smith buste appuyé","Rowing inversé (barre basse / Smith)"] },
+  reverse_fly_machine:{ name:"Oiseau machine (haut du dos)", muscle:"Dos / Épaules", sets:3, reps:"12-15", rest:60,
+    variants:["Oiseau machine (reverse pec deck)","Oiseau poulie croisée","Oiseau haltères buste penché"] },
+  /* ---- Épaules, bras, jambes : machines supplémentaires ---- */
+  shoulder_press_machine:{ name:"Développé épaules machine", muscle:"Épaules", sets:3, reps:"10-12", rest:90,
+    variants:["Développé épaules machine convergente","Développé épaules machine unilatéral","Élévations latérales machine","Développé haltères assis"] },
+  biceps_machine:    { name:"Curl biceps machine", muscle:"Biceps", sets:3, reps:"10-12", rest:60,
+    variants:["Curl biceps machine","Curl poulie deux bras (double biceps)","Curl poulie basse barre EZ","Curl incliné haltères"] },
+  triceps_machine:   { name:"Extension triceps machine", muscle:"Triceps", sets:3, reps:"10-12", rest:60,
+    variants:["Extension triceps machine assise","Dips machine","Extension poulie barre V","Développé couché prise serrée Smith"] },
+  hack_squat_machine:{ name:"Hack squat", muscle:"Quadriceps", sets:3, reps:"8-12", rest:120,
+    variants:["Hack squat machine","Presse à cuisses unilatérale","Presse à cuisses pieds bas (quadriceps)","Presse à cuisses pieds hauts (fessiers)","Squat Smith pieds avancés","Sissy squat"] },
+  /* ---- Maison (sans salle) ---- */
+  pushup_home:       { name:"Pompes", muscle:"Pectoraux / Triceps", sets:4, reps:"8-15", rest:60,
+    variants:["Pompes classiques","Pompes déclinées (pieds surélevés)","Pompes inclinées (mains surélevées)","Pompes larges","Pompes diamant","Pompes tempo lent","Pompes archer","Pompes sur poings","Pompes lestées"] },
+  pullup_home:       { name:"Tractions (barre)", muscle:"Dos / Biceps", sets:4, reps:"4-8", rest:90,
+    variants:["Traction pronation","Traction supination (chin-up)","Traction prise neutre","Traction négative (descente lente)","Traction scapulaire","Suspension à la barre (dead hang)","Traction assistée élastique","Traction australienne (rowing inversé)"] },
+
   kb_goblet_squat:   { name:"Goblet Squat", muscle:"Quadriceps / Fessiers", sets:4, reps:"12-15", rest:75,
     variants:["Goblet Squat","Front Rack Squat","Double Kettlebell Front Squat","Kettlebell Sumo Squat","Bulgarian Split Squat avec Kettlebell"] },
   kb_swing:          { name:"Kettlebell Swing", muscle:"Fessiers / Ischios / Dos", sets:4, reps:"15-20", rest:60,
@@ -685,17 +776,51 @@ const STRENGTH_PROGRAMS = {
       { day:"Jeudi", label:"Épaules / Abdos", exercises:["shoulder_press","lateral_raise","face_pull","plank"] },
       { day:"Vendredi", label:"Jambes", exercises:["squat","leg_press","leg_curl","hip_thrust","calf_raise"] },
     ]},
+  maison: { key:"maison", name:"Maison", tagline:"Sans salle — Mini Push & Mini Pull", accent:"steel", category:"musculation",
+    days:[
+      { day:"Push", label:"Mini Push", exercises:["pushup_home"] },
+      { day:"Pull", label:"Mini Pull", exercises:["pullup_home"] },
+    ]},
   kettlebell_fullbody: { key:"kettlebell_fullbody", name:"Full Body Kettlebell", tagline:"2 séances — corps entier au kettlebell", accent:"kb", category:"kettlebell",
     days:[
       { day:"A", label:"Full Body Kettlebell A", exercises:["kb_goblet_squat","kb_swing","kb_clean_press","kb_row","kb_floor_press","kb_turkish_getup"] },
       { day:"B", label:"Full Body Kettlebell B", exercises:["kb_front_rack_squat","kb_swing","kb_clean","kb_row","kb_overhead_press","kb_farmer_walk"] },
     ]},
 };
-const MUSCU_KEYS = ["fullbody","ppl","split"];
+const MUSCU_KEYS = ["fullbody","ppl","split","maison"];
 const KB_KEYS = ["kettlebell_fullbody"];
 
-const ALL_EXERCISE_IDS = Object.keys(EXERCISE_DB);
+let ALL_EXERCISE_IDS = Object.keys(EXERCISE_DB);
 const MUSCLE_GROUPS = [...new Set(Object.values(EXERCISE_DB).map(e=>e.muscle))];
+/* Exercices créés par l'utilisateur : injectés dans EXERCISE_DB puis le catalogue est reconstruit */
+function applyCustomExercises(){
+  Object.keys(EXERCISE_DB).forEach(id=>{ if(id.startsWith("custom_")) delete EXERCISE_DB[id]; });
+  (state.customExercises||[]).forEach(c=>{
+    EXERCISE_DB[c.id] = { name:c.name, muscle:c.muscle, sets:c.sets, reps:c.reps, rest:c.rest, variants:[c.name], custom:true };
+  });
+  ALL_EXERCISE_IDS = Object.keys(EXERCISE_DB);
+  PICKER_CATALOG = buildPickerCatalog();
+}
+/* Groupes affichés dans le sélecteur (un exercice « A / B » apparaît dans chacun de ses groupes) */
+const PICKER_GROUPS = ["Pectoraux","Dos","Épaules","Trapèzes","Biceps","Triceps","Avant-bras","Quadriceps","Ischios","Fessiers","Adducteurs","Mollets","Abdominaux","Obliques","Lombaires","Full Body","Gainage"];
+/* Liste à plat de toutes les entrées possibles : chaque variante est une entrée à part entière */
+function buildPickerCatalog(){
+  const map = {};
+  ALL_EXERCISE_IDS.forEach(id=>{
+    const e = EXERCISE_DB[id];
+    const tokens = e.muscle.split("/").map(t=>t.trim());
+    const names = [...new Set([e.name, ...(e.variants||[])])];
+    tokens.forEach(tok=>{
+      const g = PICKER_GROUPS.includes(tok) ? tok : "Autres";
+      map[g] = map[g] || [];
+      names.forEach(n=>{
+        if(!map[g].some(x=>x.name===n)) map[g].push({id, name:n, custom:!!e.custom});
+      });
+    });
+  });
+  return map;
+}
+let PICKER_CATALOG = buildPickerCatalog();
 
 /* ---- Types & couleurs de catégories (historique / calendrier) ---- */
 const CATEGORY_META = {
@@ -816,6 +941,10 @@ const state = {
   pendingConfirm:null,
   showManager:false,
   showPicker:false,
+  pickerQuery:"",
+  customForm:null,
+  customExercises:[],
+  muscleWeek:0,
 
   /* Historique */
   historyFilter:"all",     // all | musculation | kettlebell | course | fractionne
@@ -895,9 +1024,11 @@ async function safeSet(key,val){
   }
 }
 async function loadAll(){
-  const [hist, prefs, intervals, stretchCircuits, theme] = await Promise.all([
-    safeGet("history"), safeGet("prefs"), safeGet("interval_programs"), safeGet("stretch_circuits"), safeGet("theme")
+  const [hist, prefs, intervals, stretchCircuits, theme, customEx] = await Promise.all([
+    safeGet("history"), safeGet("prefs"), safeGet("interval_programs"), safeGet("stretch_circuits"), safeGet("theme"), safeGet("custom_exercises")
   ]);
+  state.customExercises = Array.isArray(customEx) ? customEx : [];
+  applyCustomExercises();
   state.historyList = migrateHistory(hist || []);
   state.prefs = prefs || { variants:{}, seriesCount:{} };
   state.stretchCircuits = stretchCircuits || JSON.parse(JSON.stringify(STRETCH_CIRCUITS_DEFAULT));
@@ -934,6 +1065,7 @@ function setTheme(mode){
 async function persistHistory(){ await safeSet("history", state.historyList); }
 async function persistPrefs(){ await safeSet("prefs", state.prefs); }
 async function persistIntervalPrograms(){ await safeSet("interval_programs", state.intervalPrograms); }
+async function persistCustomExercises(){ await safeSet("custom_exercises", state.customExercises); }
 async function persistStretchCircuits(){ await safeSet("stretch_circuits", state.stretchCircuits); }
 
 /* Les séances enregistrées avant l'ajout du module Cardio/Kettlebell n'ont pas de champ "type".
@@ -1136,6 +1268,45 @@ function buildSession(programKey, dayIndex){
   };
 }
 
+/* ---- Suggestions de charge / répétitions (affichées en grisé dans les champs) ---- */
+function lastResultFor(name){
+  for(const r of state.historyList){
+    if(!Array.isArray(r.exercises)) continue;
+    const ex = r.exercises.find(e=>e.name===name);
+    if(ex && ex.sets && ex.sets.length) return ex.sets;
+  }
+  return null;
+}
+function parseRepsRange(h){
+  const n = (String(h||"").match(/\d+/g)||[]).map(Number);
+  if(!n.length) return null;
+  return { lo:n[0], hi:n[n.length>1?1:0] };
+}
+function fmtNum(x){ return String(Math.round(x*10)/10); }
+function suggestionsFor(ex){
+  const last = lastResultFor(ex.name);
+  if(!last) return null;
+  const range = parseRepsRange(ex.repsHint);
+  const parsed = last.map(x=>({ w:parseFloat(String(x.weight).replace(",",".")), r:parseInt(x.reps,10) }));
+  const hasW = parsed.some(x=>!isNaN(x.w) && x.w>0);
+  const allTop = !!range && parsed.every(x=>!isNaN(x.r) && x.r>=range.hi);
+  const sets = [];
+  for(let i=0;i<Math.max(ex.seriesCount,1);i++){
+    const b = parsed[Math.min(i,parsed.length-1)];
+    let w = "", r = "";
+    if(allTop){
+      if(hasW && !isNaN(b.w)) w = fmtNum(b.w + (b.w<20?1:2.5));
+      r = String(range.lo);
+    } else {
+      if(hasW && !isNaN(b.w) && b.w>0) w = fmtNum(b.w);
+      if(!isNaN(b.r)) r = String(range ? Math.min(range.hi, b.r+1) : b.r);
+    }
+    sets.push({w, r});
+  }
+  const lastText = last.map(x=>`${(x.weight&&x.weight!=="—")?x.weight+" kg × ":""}${x.reps}`).join(" · ");
+  return { sets, progress:allTop && hasW, lastText };
+}
+
 function currentExercise(){
   const s = state.activeSession;
   return s.exercises[s.currentIndex];
@@ -1161,7 +1332,7 @@ async function endSession(){
        — utilisée pour proposer de reprendre exactement la même séance plus tard. */
     composition: s.exercises.map(ex=>({
       id: ex.id, name: ex.name, muscle: ex.muscle, variants: ex.variants,
-      repsHint: ex.repsHint, seriesCount: ex.seriesCount, restTime: ex.restTime,
+      repsHint: ex.repsHint, seriesCount: ex.seriesCount, restTime: ex.restTime, extra: !!ex.extra,
     })),
   };
   state.historyList.unshift(record);
@@ -1275,7 +1446,7 @@ function lastSessionForDay(programKey, dayIndex){
 function buildSessionFromRecord(record){
   const exercises = record.composition.map(c=>({
     id: c.id, muscle: c.muscle, variants: c.variants, repsHint: c.repsHint,
-    name: c.name, seriesCount: c.seriesCount, restTime: c.restTime,
+    name: c.name, seriesCount: c.seriesCount, restTime: c.restTime, extra: !!c.extra,
     sets: Array.from({length:c.seriesCount}, ()=>({weight:"", reps:"", done:false})),
   }));
   return {
@@ -1308,16 +1479,14 @@ function openHistoryDetail(record){
 function setVariant(exIndex, variantName){
   const ex = state.activeSession.exercises[exIndex];
   ex.name = variantName;
-  state.prefs.variants[ex.id] = variantName;
-  persistPrefs();
+  if(!ex.extra){ state.prefs.variants[ex.id] = variantName; persistPrefs(); }
   render();
 }
 function setSeriesCount(exIndex, count){
   const ex = state.activeSession.exercises[exIndex];
   if(ex.seriesCount === count) return;
   ex.seriesCount = count;
-  state.prefs.seriesCount[ex.id] = count;
-  persistPrefs();
+  if(!ex.extra){ state.prefs.seriesCount[ex.id] = count; persistPrefs(); }
   const cur = ex.sets.length;
   if(count > cur){
     for(let i=cur;i<count;i++) ex.sets.push({weight:"", reps:"", done:false});
@@ -1331,8 +1500,8 @@ function validateSet(exIndex, setIndex){
   const row = document.getElementById(`set-${exIndex}-${setIndex}`);
   const weightInput = row.querySelector(".w-input");
   const repsInput = row.querySelector(".r-input");
-  ex.sets[setIndex].weight = weightInput.value;
-  ex.sets[setIndex].reps = repsInput.value;
+  ex.sets[setIndex].weight = weightInput.value || weightInput.dataset.sw || "";
+  ex.sets[setIndex].reps = repsInput.value || repsInput.dataset.sr || "";
   ex.sets[setIndex].done = true;
   const isLast = setIndex === ex.sets.length-1;
   render();
@@ -1357,10 +1526,19 @@ function jumpToExercise(i){ state.activeSession.currentIndex = i; render(); wind
 
 /* Gestion des exercices de la séance (ajout / suppression) */
 function openManager(){ state.showManager = true; render(); }
-function closeManager(){ state.showManager = false; state.showPicker = false; render(); }
+function closeManager(){ state.showManager = false; state.showPicker = false; state.customForm = null; render(); }
 function openPicker(){ state.showPicker = true; render(); }
-function closePicker(){ state.showPicker = false; render(); }
+function closePicker(){ state.showPicker = false; state.customForm = null; render(); }
 
+function moveExercise(i, dir){
+  const s = state.activeSession;
+  const j = i+dir;
+  if(j<0 || j>=s.exercises.length) return;
+  const cur = s.exercises[s.currentIndex];
+  [s.exercises[i], s.exercises[j]] = [s.exercises[j], s.exercises[i]];
+  s.currentIndex = s.exercises.indexOf(cur);
+  render();
+}
 function removeExercise(index){
   const s = state.activeSession;
   s.exercises.splice(index,1);
@@ -1370,18 +1548,76 @@ function removeExercise(index){
   render();
 }
 
-function addExerciseToSession(exId){
+function addExerciseToSession(exId, variantName){
   const s = state.activeSession;
   const base = EXERCISE_DB[exId];
-  const variant = state.prefs.variants[exId] || base.name;
-  const seriesCount = state.prefs.seriesCount[exId] || base.sets;
+  /* Doublon (même exercice déjà présent) → instance « extra » : n'écrase pas les préférences */
+  const extra = s.exercises.some(e=>e.id===exId);
+  const variant = variantName || (extra ? base.name : (state.prefs.variants[exId] || base.name));
+  const seriesCount = (!extra && state.prefs.seriesCount[exId]) || base.sets;
+  const variants = [...new Set([variant, base.name, ...(base.variants||[])])];
   s.exercises.push({
-    id: exId, muscle: base.muscle, variants: base.variants, repsHint: base.reps,
-    name: variant, seriesCount, restTime: base.rest,
+    id: exId, muscle: base.muscle, variants, repsHint: base.reps,
+    name: variant, seriesCount, restTime: base.rest, extra,
     sets: Array.from({length:seriesCount}, ()=>({weight:"", reps:"", done:false})),
   });
   state.showPicker = false;
+  state.pickerQuery = "";
   showToast(`${variant} ajouté à la séance`);
+  render();
+}
+function pickerSearch(v){
+  state.pickerQuery = v;
+  const el = document.getElementById("picker-results");
+  if(el) el.innerHTML = renderPickerResults();
+}
+function jsArg(str){ return JSON.stringify(str).replace(/&/g,"&amp;").replace(/'/g,"&apos;").replace(/"/g,"&quot;"); }
+function toggleFavorite(name){
+  const fav = state.prefs.favorites = state.prefs.favorites || [];
+  const i = fav.indexOf(name);
+  if(i>=0) fav.splice(i,1); else fav.push(name);
+  persistPrefs();
+  const el = document.getElementById("picker-results");
+  if(el) el.innerHTML = renderPickerResults();
+}
+function openCustomForm(id){
+  const c = id ? state.customExercises.find(x=>x.id===id) : null;
+  state.customForm = c ? {...c} : { id:null, name:"", muscle:"Pectoraux", sets:3, reps:"8-12", rest:90 };
+  render();
+}
+function closeCustomForm(){ state.customForm = null; render(); }
+async function saveCustomExercise(){
+  const f = state.customForm;
+  const name = document.getElementById("cf-name").value.trim();
+  if(!name){ showToast("Donne un nom à ton exercice"); return; }
+  const data = {
+    name, muscle: document.getElementById("cf-muscle").value,
+    sets: parseInt(document.getElementById("cf-sets").value,10),
+    reps: document.getElementById("cf-reps").value.trim() || "8-12",
+    rest: parseInt(document.getElementById("cf-rest").value,10),
+  };
+  if(f.id){
+    const i = state.customExercises.findIndex(x=>x.id===f.id);
+    if(i>=0) state.customExercises[i] = { id:f.id, ...data };
+  } else {
+    state.customExercises.push({ id:"custom_"+Date.now(), ...data });
+  }
+  applyCustomExercises();
+  await persistCustomExercises();
+  state.customForm = null;
+  state.pickerQuery = name;
+  showToast("Exercice enregistré");
+  render();
+}
+function confirmDeleteCustom(id){
+  const c = state.customExercises.find(x=>x.id===id);
+  askConfirm(`Supprimer « ${c?c.name:"cet exercice"} » du catalogue ? Les séances déjà enregistrées ne changent pas.`, ()=>deleteCustom(id));
+}
+async function deleteCustom(id){
+  state.customExercises = state.customExercises.filter(x=>x.id!==id);
+  applyCustomExercises();
+  await persistCustomExercises();
+  showToast("Exercice supprimé du catalogue");
   render();
 }
 
@@ -1420,6 +1656,7 @@ function exportData(){
     prefs: state.prefs,
     intervalPrograms: state.intervalPrograms,
     stretchCircuits: state.stretchCircuits,
+    customExercises: state.customExercises,
   };
   try{
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type:"application/json" });
@@ -1469,7 +1706,10 @@ async function applyImport(){
   state.prefs = parsed.prefs || { variants:{}, seriesCount:{} };
   state.intervalPrograms = Array.isArray(parsed.intervalPrograms) ? parsed.intervalPrograms : [];
   state.stretchCircuits = parsed.stretchCircuits || JSON.parse(JSON.stringify(STRETCH_CIRCUITS_DEFAULT));
+  state.customExercises = Array.isArray(parsed.customExercises) ? parsed.customExercises : [];
+  applyCustomExercises();
   state.pendingImport = null;
+  await persistCustomExercises();
   await persistHistory();
   await persistPrefs();
   await persistIntervalPrograms();
@@ -1489,6 +1729,9 @@ async function doResetAllData(){
   state.stretchRunner = null;
   state.intervalPrograms = [];
   state.stretchCircuits = JSON.parse(JSON.stringify(STRETCH_CIRCUITS_DEFAULT));
+  state.customExercises = [];
+  applyCustomExercises();
+  await persistCustomExercises();
   await persistHistory();
   await persistPrefs();
   await persistIntervalPrograms();
@@ -2080,7 +2323,7 @@ function renderHome(){
     </div>
     <div class="cat-card cat-volt" onclick="openMusculation()">
       <span class="cat-icon">${ICONS.dumbbell}</span>
-      <div><h3>Musculation</h3><span>Full Body · PPL · Split</span></div>
+      <div><h3>Musculation</h3><span>Full Body · PPL · Split · Maison</span></div>
       <span class="cat-chev">${ICONS.chev}</span>
     </div>
     <div class="cat-card cat-steel" onclick="openCardio()">
@@ -2099,6 +2342,9 @@ function renderHome(){
       <span class="cat-chev">${ICONS.chev}</span>
     </div>
     ${nextCard}
+    <div class="history-entry-btn" onclick="openMuscles()" style="margin-bottom:10px;">
+      Muscles travaillés cette semaine ${ICONS.chev}
+    </div>
     <div class="history-entry-btn" onclick="openHistory()">
       Voir l'historique des séances ${ICONS.chev}
     </div>
@@ -2176,15 +2422,21 @@ function renderSession(){
   }).join("");
 
   const setLabels = `<div class="set-labels"><span></span><span>Charge (kg)</span><span>Répétitions</span><span></span></div>`;
-  const setsRows = ex.sets.map((st,i)=>`
+  const sug = suggestionsFor(ex);
+  const sugNote = sug ? `<div class="sug-note">Dernière fois : ${escapeHtml(sug.lastText)}${sug.progress ? `<br><b>Objectif du jour :</b> tu étais au haut de la fourchette partout → on monte la charge.` : `<br><b>Objectif du jour :</b> mêmes charges, +1 répétition si possible. Valide sans rien écrire pour garder la suggestion.`}</div>` : "";
+  const setsRows = ex.sets.map((st,i)=>{
+    const sg = sug ? (sug.sets[i] || sug.sets[sug.sets.length-1]) : null;
+    const sw = sg ? sg.w : "", sr = sg ? sg.r : "";
+    return `
     <div class="set-row" id="set-${s.currentIndex}-${i}">
       <div class="set-idx">#${i+1}</div>
-      <input class="w-input" type="number" inputmode="decimal" placeholder="kg" value="${st.weight}" ${st.done?'disabled':''}>
-      <input class="r-input" type="number" inputmode="numeric" placeholder="${ex.repsHint}" value="${st.reps}" ${st.done?'disabled':''}>
+      <input class="w-input ${sw!==""?'has-sug':''}" type="number" inputmode="decimal" placeholder="${sw!==""?sw:'kg'}" data-sw="${sw}" value="${st.weight}" ${st.done?'disabled':''}>
+      <input class="r-input ${sr!==""?'has-sug':''}" type="number" inputmode="numeric" placeholder="${sr!==""?sr:ex.repsHint}" data-sr="${sr}" value="${st.reps}" ${st.done?'disabled':''}>
       <div class="validate ${st.done?'done':''}" onclick="${st.done ? `unvalidateSet(${s.currentIndex},${i})` : `validateSet(${s.currentIndex},${i})`}">
         ${ICONS.check}
       </div>
-    </div>`).join("");
+    </div>`;
+  }).join("");
 
   const variantOptions = ex.variants.map(v=>`<option value="${v}" ${v===ex.name?'selected':''}>${v}</option>`).join("");
 
@@ -2224,6 +2476,7 @@ function renderSession(){
         </div>
       </div>
 
+      ${sugNote}
       ${setLabels}
       ${setsRows}
 
@@ -2256,7 +2509,11 @@ function renderManagerOverlay(){
         <h4>${ex.name}</h4>
         <span>${ex.muscle}</span>
       </div>
-      <div class="remove-x" onclick="confirmRemoveExercise(${i})">${ICONS.close}</div>
+      <div class="mv">
+        <button class="stretch-move-btn" onclick="moveExercise(${i},-1)" ${i===0?'disabled':''}>${ICONS.arrowUp}</button>
+        <button class="stretch-move-btn" onclick="moveExercise(${i},1)" ${i===s.exercises.length-1?'disabled':''}>${ICONS.arrowDown}</button>
+        <div class="remove-x" onclick="confirmRemoveExercise(${i})">${ICONS.close}</div>
+      </div>
     </div>`).join("");
 
   return `
@@ -2275,27 +2532,81 @@ function renderManagerOverlay(){
   `;
 }
 
-function renderPicker(){
+function normTxt(t){ return (t||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,""); }
+function pickerItemHTML(it, counts, favs){
+  const fav = favs.includes(it.name);
+  const mini = it.custom ? `
+      <span class="pi-mini" onclick="event.stopPropagation(); openCustomForm('${it.id}')" title="Modifier">${ICONS.edit}</span>
+      <span class="pi-mini" onclick="event.stopPropagation(); confirmDeleteCustom('${it.id}')" title="Supprimer">${ICONS.trash}</span>` : "";
+  return `
+    <div class="picker-item" onclick='addExerciseToSession(&apos;${it.id}&apos;, ${jsArg(it.name)})'>
+      <span>${escapeHtml(it.name)}${counts[it.name]?` <em style="color:var(--text-muted); font-size:11px; font-style:normal;">· déjà dans la séance${counts[it.name]>1?" ×"+counts[it.name]:""}</em>`:""}</span>
+      <span class="pi-actions">${mini}
+        <span class="pi-star ${fav?'on':''}" onclick='event.stopPropagation(); toggleFavorite(${jsArg(it.name)})' title="Favori">${fav?"★":"☆"}</span>
+        <span class="add-plus">${ICONS.plus}</span>
+      </span>
+    </div>`;
+}
+function renderPickerResults(){
   const s = state.activeSession;
-  const usedIds = new Set(s.exercises.map(e=>e.id));
-  const groups = MUSCLE_GROUPS.map(group=>{
-    const items = ALL_EXERCISE_IDS.filter(id=>EXERCISE_DB[id].muscle===group && !usedIds.has(id));
-    if(items.length===0) return "";
+  const q = normTxt(state.pickerQuery||"").trim();
+  const favs = state.prefs.favorites || [];
+  const counts = {};
+  s.exercises.forEach(e=>{ counts[e.name]=(counts[e.name]||0)+1; });
+  let out = "";
+  // Section favoris
+  const seen = new Set(), favItems = [];
+  [...PICKER_GROUPS, "Autres"].forEach(g=>{
+    (PICKER_CATALOG[g]||[]).forEach(it=>{
+      if(favs.includes(it.name) && !seen.has(it.name)){ seen.add(it.name); favItems.push(it); }
+    });
+  });
+  const favShown = q ? favItems.filter(it=>normTxt(it.name).includes(q)) : favItems;
+  if(favShown.length){
+    out += `<div class="picker-group"><div class="picker-group-title">★ Favoris</div>${favShown.map(it=>pickerItemHTML(it,counts,favs)).join("")}</div>`;
+  }
+  out += [...PICKER_GROUPS, "Autres"].map(group=>{
+    let items = PICKER_CATALOG[group]||[];
+    if(q) items = items.filter(it=>normTxt(it.name).includes(q) || normTxt(group).includes(q));
+    if(!items.length) return "";
     return `
       <div class="picker-group">
         <div class="picker-group-title">${group}</div>
-        ${items.map(id=>`
-          <div class="picker-item" onclick="addExerciseToSession('${id}')">
-            <span>${EXERCISE_DB[id].name}</span>
-            <span class="add-plus">${ICONS.plus}</span>
-          </div>`).join("")}
+        ${items.map(it=>pickerItemHTML(it,counts,favs)).join("")}
       </div>`;
   }).join("");
+  return out || `<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:20px 0;">Aucun exercice ne correspond à « ${escapeHtml(state.pickerQuery||"")} ».</p>`;
+}
+
+function renderCustomForm(){
+  const f = state.customForm;
+  const groupOpts = PICKER_GROUPS.map(g=>`<option ${g===f.muscle?'selected':''}>${g}</option>`).join("");
+  const setsOpts = [2,3,4,5,6].map(n=>`<option ${n===f.sets?'selected':''}>${n}</option>`).join("");
+  const restOpts = [30,45,60,90,120,180].map(n=>`<option value="${n}" ${n===f.rest?'selected':''}>${n}s</option>`).join("");
+  return `
+    <div class="picker-wrap" style="max-height:none;">
+      <div class="picker-back" onclick="closeCustomForm()">← Retour au catalogue</div>
+      <h3 class="display" style="margin:2px 0 8px; font-size:18px;">${f.id?"Modifier":"Créer"} mon exercice</h3>
+      <div class="cf-field"><label>Nom</label><input id="cf-name" type="text" value="${escapeHtml(f.name)}" placeholder="ex. Pompes archer lestées"></div>
+      <div class="cf-field"><label>Muscle principal</label><select id="cf-muscle">${groupOpts}</select></div>
+      <div class="cf-row">
+        <div class="cf-field"><label>Séries</label><select id="cf-sets">${setsOpts}</select></div>
+        <div class="cf-field"><label>Répétitions</label><input id="cf-reps" type="text" value="${escapeHtml(f.reps)}" placeholder="8-12"></div>
+        <div class="cf-field"><label>Repos</label><select id="cf-rest">${restOpts}</select></div>
+      </div>
+      <button class="btn btn-primary btn-block" onclick="saveCustomExercise()">Enregistrer</button>
+    </div>`;
+}
+
+function renderPicker(){
+  if(state.customForm) return renderCustomForm();
   return `
     <div class="picker-wrap">
       <div class="picker-back" onclick="closePicker()">← Retour à la liste</div>
-      <div class="picker-scroll">
-        ${groups || `<p style="color:var(--text-muted); font-size:13px; text-align:center; padding:20px 0;">Tous les exercices disponibles sont déjà dans la séance.</p>`}
+      <input type="search" class="picker-search" placeholder="Rechercher (ex. pecs, haut, dos, curl…)" value="${escapeHtml(state.pickerQuery||"")}" oninput="pickerSearch(this.value)" style="width:100%; padding:11px 14px; margin:0; border-radius:12px; border:1px solid var(--line); background:var(--surface-2); color:var(--text); font-size:14px; box-sizing:border-box;">
+      <button class="picker-new" onclick="openCustomForm()">${ICONS.plus} Créer mon exercice</button>
+      <div class="picker-scroll" id="picker-results">
+        ${renderPickerResults()}
       </div>
     </div>
   `;
@@ -2512,6 +2823,8 @@ function renderFractionneRunner(){
 }
 
 function setHistoryFilter(f){ state.historyFilter = f; state.calendarSelectedDate = null; render(); }
+function openMuscles(){ state.historyView="muscles"; state.view="history"; render(); }
+function shiftMuscleWeek(d){ state.muscleWeek = Math.min(0, state.muscleWeek+d); render(); }
 function setHistoryView(v){ state.historyView = v; render(); }
 
 /* ---------- Progression par exercice (moyenne des charges validées, par séance) ---------- */
@@ -2604,6 +2917,117 @@ function buildProgressSVG(points){
     </svg>`;
 }
 
+/* ---------- Volume hebdomadaire par muscle + silhouette ---------- */
+const VOL_GROUPS = ["Pectoraux","Dos","Épaules","Trapèzes","Biceps","Triceps","Avant-bras","Abdominaux","Obliques","Lombaires","Quadriceps","Fessiers","Ischios","Adducteurs","Mollets"];
+function weekStartFor(offset){
+  const d = new Date(); d.setHours(0,0,0,0);
+  d.setDate(d.getDate() - ((d.getDay()+6)%7) + offset*7);
+  return d;
+}
+function computeWeekVolume(offset){
+  const start = weekStartFor(offset), end = new Date(start); end.setDate(end.getDate()+7);
+  const vol = {}; VOL_GROUPS.forEach(g=>vol[g]=0);
+  let sessions = 0;
+  state.historyList.forEach(r=>{
+    const d = new Date(r.date);
+    if(d<start || d>=end) return;
+    if(Array.isArray(r.exercises) && r.exercises.length) sessions++;
+    (r.exercises||[]).forEach(ex=>{
+      const n = (ex.sets||[]).length;
+      (ex.muscle||"").split("/").map(t=>t.trim()).forEach(t=>{ if(vol[t]!==undefined) vol[t]+=n; });
+    });
+  });
+  return { vol, start, end, sessions };
+}
+function volLevel(v){ return v===0 ? 0 : v<6 ? 1 : v<10 ? 2 : v<=20 ? 3 : 4; }
+function volFill(v){
+  const l = volLevel(v);
+  if(l===0) return "fill:var(--surface-2);";
+  if(l===1) return "fill:var(--volt); fill-opacity:0.28;";
+  if(l===2) return "fill:var(--volt); fill-opacity:0.58;";
+  if(l===3) return "fill:var(--volt); fill-opacity:1;";
+  return "fill:var(--ember); fill-opacity:1;";
+}
+function bodySVG(vol){
+  const M = (g,shape)=>shape.replace("<",`<`).replace(/^<(\w+)/, (m,t)=>`<${t} style="${volFill(vol[g])}" data-m="${g}"`);
+  const base = `fill="var(--surface-2)" stroke="var(--line-strong)" stroke-width="1"`;
+  const silhouette = `
+    <circle cx="100" cy="30" r="18" ${base}/>
+    <rect x="92" y="44" width="16" height="16" rx="5" ${base}/>
+    <path d="M60 64 Q100 52 140 64 L134 150 Q132 178 124 194 L76 194 Q68 178 66 150 Z" ${base}/>
+    <rect x="38" y="68" width="22" height="58" rx="11" ${base}/><rect x="140" y="68" width="22" height="58" rx="11" ${base}/>
+    <rect x="32" y="124" width="20" height="58" rx="10" ${base}/><rect x="148" y="124" width="20" height="58" rx="10" ${base}/>
+    <rect x="62" y="190" width="34" height="100" rx="16" ${base}/><rect x="104" y="190" width="34" height="100" rx="16" ${base}/>
+    <rect x="64" y="284" width="28" height="82" rx="13" ${base}/><rect x="108" y="284" width="28" height="82" rx="13" ${base}/>`;
+  const front = `
+    ${M("Épaules",`<circle cx="52" cy="76" r="13"/>`)}${M("Épaules",`<circle cx="148" cy="76" r="13"/>`)}
+    ${M("Pectoraux",`<ellipse cx="84" cy="90" rx="19" ry="14"/>`)}${M("Pectoraux",`<ellipse cx="116" cy="90" rx="19" ry="14"/>`)}
+    ${M("Biceps",`<ellipse cx="49" cy="106" rx="9" ry="19"/>`)}${M("Biceps",`<ellipse cx="151" cy="106" rx="9" ry="19"/>`)}
+    ${M("Avant-bras",`<ellipse cx="42" cy="154" rx="8" ry="24"/>`)}${M("Avant-bras",`<ellipse cx="158" cy="154" rx="8" ry="24"/>`)}
+    ${M("Abdominaux",`<rect x="90" y="110" width="20" height="62" rx="8"/>`)}
+    ${M("Obliques",`<ellipse cx="78" cy="138" rx="9" ry="26"/>`)}${M("Obliques",`<ellipse cx="122" cy="138" rx="9" ry="26"/>`)}
+    ${M("Quadriceps",`<ellipse cx="76" cy="244" rx="14" ry="48"/>`)}${M("Quadriceps",`<ellipse cx="124" cy="244" rx="14" ry="48"/>`)}
+    ${M("Adducteurs",`<ellipse cx="92" cy="236" rx="5" ry="32"/>`)}${M("Adducteurs",`<ellipse cx="108" cy="236" rx="5" ry="32"/>`)}
+    ${M("Mollets",`<ellipse cx="77" cy="318" rx="11" ry="32"/>`)}${M("Mollets",`<ellipse cx="123" cy="318" rx="11" ry="32"/>`)}`;
+  const back = `
+    ${M("Trapèzes",`<path d="M100 60 L76 72 L88 106 L100 118 L112 106 L124 72 Z"/>`)}
+    ${M("Épaules",`<circle cx="52" cy="76" r="13"/>`)}${M("Épaules",`<circle cx="148" cy="76" r="13"/>`)}
+    ${M("Dos",`<ellipse cx="80" cy="122" rx="15" ry="30"/>`)}${M("Dos",`<ellipse cx="120" cy="122" rx="15" ry="30"/>`)}
+    ${M("Triceps",`<ellipse cx="49" cy="106" rx="9" ry="19"/>`)}${M("Triceps",`<ellipse cx="151" cy="106" rx="9" ry="19"/>`)}
+    ${M("Avant-bras",`<ellipse cx="42" cy="154" rx="8" ry="24"/>`)}${M("Avant-bras",`<ellipse cx="158" cy="154" rx="8" ry="24"/>`)}
+    ${M("Lombaires",`<rect x="86" y="150" width="28" height="26" rx="9"/>`)}
+    ${M("Fessiers",`<ellipse cx="84" cy="196" rx="16" ry="16"/>`)}${M("Fessiers",`<ellipse cx="116" cy="196" rx="16" ry="16"/>`)}
+    ${M("Ischios",`<ellipse cx="78" cy="250" rx="14" ry="38"/>`)}${M("Ischios",`<ellipse cx="122" cy="250" rx="14" ry="38"/>`)}
+    ${M("Mollets",`<ellipse cx="77" cy="318" rx="11" ry="32"/>`)}${M("Mollets",`<ellipse cx="123" cy="318" rx="11" ry="32"/>`)}`;
+  return `
+    <svg viewBox="0 0 440 396" role="img" aria-label="Schéma des muscles travaillés">
+      <g transform="translate(10,0)">${silhouette}${front}</g>
+      <g transform="translate(230,0)">${silhouette}${back}</g>
+      <text x="110" y="390" text-anchor="middle" font-size="11" fill="var(--text-dim)" font-family="Inter" font-weight="700" letter-spacing="1.5">FACE</text>
+      <text x="330" y="390" text-anchor="middle" font-size="11" fill="var(--text-dim)" font-family="Inter" font-weight="700" letter-spacing="1.5">DOS</text>
+    </svg>`;
+}
+function renderMusclesView(){
+  const { vol, start, end, sessions } = computeWeekVolume(state.muscleWeek);
+  const endShow = new Date(end); endShow.setDate(endShow.getDate()-1);
+  const fmt = d=>d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"});
+  const total = VOL_GROUPS.reduce((a,g)=>a+vol[g],0);
+  const rows = [...VOL_GROUPS].sort((a,b)=>vol[b]-vol[a]).map(g=>{
+    const v = vol[g], l = volLevel(v);
+    const col = l===4 ? "var(--ember)" : "var(--volt)";
+    const op = l===1 ? 0.35 : l===2 ? 0.65 : 1;
+    return `<div class="vol-row"><div class="nm">${g}</div>
+      <div class="bar"><div class="zone" style="left:${(10/24*100).toFixed(1)}%; width:${(10/24*100).toFixed(1)}%"></div>
+        <div class="fill" style="width:${Math.min(v,24)/24*100}%; background:${col}; opacity:${op}"></div></div>
+      <div class="v" style="color:${v===0?'var(--text-dim)':'var(--text)'}">${v}</div></div>`;
+  }).join("");
+  return `
+    <div class="period-nav">
+      <div class="back" onclick="shiftMuscleWeek(-1)">${ICONS.arrowLeft}</div>
+      <span class="period-label">${state.muscleWeek===0?"Cette semaine · ":""}${fmt(start)} → ${fmt(endShow)}</span>
+      <div class="back" onclick="shiftMuscleWeek(1)" style="${state.muscleWeek===0?'opacity:.3':''}">${ICONS.arrowRight}</div>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="n">${sessions}</div><div class="l">Séances</div></div>
+      <div class="stat-box"><div class="n">${total}</div><div class="l">Séries validées</div></div>
+      <div class="stat-box"><div class="n">${VOL_GROUPS.filter(g=>vol[g]>=10).length}</div><div class="l">Muscles ≥ 10 séries</div></div>
+    </div>
+    <div class="body-wrap">
+      ${bodySVG(vol)}
+      <div class="legend">
+        <span><i style="background:var(--surface-2); border:1px solid var(--line-strong)"></i>0</span>
+        <span><i style="background:var(--volt); opacity:.28"></i>1-5</span>
+        <span><i style="background:var(--volt); opacity:.58"></i>6-9</span>
+        <span><i style="background:var(--volt)"></i>10-20</span>
+        <span><i style="background:var(--ember)"></i>&gt; 20</span>
+      </div>
+    </div>
+    <div class="section-title" style="font-size:11px; letter-spacing:1px; text-transform:uppercase; color:var(--text-dim); font-weight:700; margin:6px 0 10px;">Séries par muscle (séances salle, kettlebell et maison)</div>
+    ${rows}
+    <p style="color:var(--text-muted); font-size:12px; line-height:1.5; margin-top:12px;">La zone teintée (10 à 20 séries par semaine) est un repère courant pour progresser sans surcharger un muscle. Un exercice qui sollicite plusieurs muscles (ex. pompes : pectoraux et triceps) compte pour chacun.</p>
+  `;
+}
+
 function renderProgressView(){
   initProgressPeriod();
   const names = getProgressExerciseNames();
@@ -2645,7 +3069,7 @@ function filteredHistory(){
 }
 
 function renderHistoryList(){
-  const filterChips = state.historyView==="progress" ? "" : `
+  const filterChips = (state.historyView==="progress" || state.historyView==="muscles") ? "" : `
     <div class="filter-row">
       <div class="filter-chip ${state.historyFilter==='all'?'active':''}" onclick="setHistoryFilter('all')">Toutes</div>
       <div class="filter-chip ${state.historyFilter==='musculation'?'active':''}" onclick="setHistoryFilter('musculation')">Musculation</div>
@@ -2658,6 +3082,7 @@ function renderHistoryList(){
       <button class="vt-btn ${state.historyView==='list'?'active':''}" onclick="setHistoryView('list')">${ICONS.list} Liste</button>
       <button class="vt-btn ${state.historyView==='calendar'?'active':''}" onclick="setHistoryView('calendar')">${ICONS.calendar} Calendrier</button>
       <button class="vt-btn ${state.historyView==='progress'?'active':''}" onclick="setHistoryView('progress')">${ICONS.chart} Progression</button>
+      <button class="vt-btn ${state.historyView==='muscles'?'active':''}" onclick="setHistoryView('muscles')">${ICONS.target} Muscles</button>
     </div>`;
 
   const header = `
@@ -2671,6 +3096,7 @@ function renderHistoryList(){
 
   if(state.historyView==="calendar") return header + renderCalendar();
   if(state.historyView==="progress") return header + renderProgressView();
+  if(state.historyView==="muscles") return header + renderMusclesView();
 
   const list = filteredHistory();
   if(list.length===0){
@@ -2861,7 +3287,7 @@ function renderProfile(){
       <div class="settings-row"><span class="k">Temps total d'entraînement</span><span class="v">${totalMs>0?fmtDuration(totalMs):'0 min'}</span></div>
     </div>
     <div class="settings-block">
-      <div class="settings-row"><span class="k">Version</span><span class="v" style="color:var(--text-muted)">MVP 1.3</span></div>
+      <div class="settings-row"><span class="k">Version</span><span class="v" style="color:var(--text-muted)">MVP 1.6</span></div>
     </div>
 
     <div class="export-block">
